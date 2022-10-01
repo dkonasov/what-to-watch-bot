@@ -4,4 +4,4 @@ on:
     types: [opened, reopened, synchronize]
 jobs:
   build:
-    uses: dkonasov/what-to-watch-bot/.github/workflows/build.yml@main
+    uses: ./.github/workflows/build.yml
