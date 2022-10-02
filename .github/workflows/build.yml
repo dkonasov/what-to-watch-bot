@@ -13,3 +13,7 @@ jobs:
         with:
           command: build
           args: --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: bin
+          path: target/release/what-to-watch-bot
