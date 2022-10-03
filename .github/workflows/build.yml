@@ -1,18 +1,25 @@
 name: build
 on:
   workflow_call:
+    secrets:
+      ARCH:
+        required: true
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ARCH: ${{ secrets.ARCH }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release
+      - name: install arch
+        run: rustup target add ${ARCH}
+      - name: install linker
+        run: sudo apt install gcc-arm-linux-gnueabihf
+      - name: build
+        run: cargo build --release --target=${ARCH}
       - uses: actions/upload-artifact@v3
         with:
           name: bin
