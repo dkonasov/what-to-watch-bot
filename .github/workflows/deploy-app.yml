@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/build.yml
+    with:
+      arch: ${{ secrets.ARCH }}
   deploy:
     runs-on: ubuntu-latest
     needs: build
