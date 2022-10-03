@@ -16,10 +16,8 @@ jobs:
           toolchain: stable
       - name: install arch
         run: rustup target add ${ARCH}
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target=${ARCH}
+      - name: build
+        run: cargo build --release --target=${ARCH}
       - uses: actions/upload-artifact@v3
         with:
           name: bin
