@@ -15,7 +15,7 @@ jobs:
         with:
           toolchain: stable
       - name: install arch
-        run: rustup add ${ARCH}
+        run: rustup target add ${ARCH}
       - uses: actions-rs/cargo@v1
         with:
           command: build
