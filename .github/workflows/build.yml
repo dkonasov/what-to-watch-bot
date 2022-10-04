@@ -16,6 +16,8 @@ jobs:
           toolchain: stable
       - name: install arch
         run: rustup target add ${ARCH}
+      - name: install linker
+        run: sudo apt install gcc-aarch64-linux-gnu
       - name: build
         run: cargo build --release --target=${ARCH}
       - uses: actions/upload-artifact@v3
