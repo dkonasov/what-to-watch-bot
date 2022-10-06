@@ -4,7 +4,7 @@ use std::net::SocketAddr;
 use hyper::service::{make_service_fn, service_fn};
 
 async fn handle_request(_req: Request<Body>) -> Result<Response<Body>, Infallible> {
-    Ok(Response::new("Hello, World".into()))
+    Ok(Response::new("Hello, World 2".into()))
 }
 
 #[tokio::main]
