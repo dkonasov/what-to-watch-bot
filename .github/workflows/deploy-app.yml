@@ -25,3 +25,19 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: what-to-watch-bot
           target: ${{ secrets.APP_PATH }}
+      - name: chmod for executable
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: chmod +x what-to-watch-bot
+      - name: restart service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: sudo systemctl restart what-to-watch-bot
