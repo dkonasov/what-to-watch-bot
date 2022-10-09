@@ -1,0 +1,9 @@
+version: "2.0"
+services:
+  app:
+    image: ubuntu
+    volumes:
+      - ${HOME}/what-to-whatch-bot:/what-to-whatch-bot
+    ports:
+      - 3000:3000
+    command: chmod +x /what-to-whatch-bot && what-to-watch-bot
