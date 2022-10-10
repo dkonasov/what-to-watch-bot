@@ -1,26 +1,17 @@
 name: build
 on:
   workflow_call:
-    secrets:
-      ARCH:
-        required: true
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ARCH: ${{ secrets.ARCH }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: install arch
-        run: rustup target add ${ARCH}
-      - name: install linker
-        run: sudo apt install gcc-aarch64-linux-gnu
       - name: build
-        run: cargo build --release --target=${ARCH}
+        run: cargo build --release
       - uses: actions/upload-artifact@v3
         with:
           name: bin
-          path: target/${{ secrets.ARCH }}/release/what-to-watch-bot
+          path: target/release/what-to-watch-bot
