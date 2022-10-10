@@ -23,7 +23,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script: docker-compose down
+          script: sudo docker-compose down
       - uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -39,4 +39,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script: docker-compose up -d
+          script: sudo docker-compose up -d
