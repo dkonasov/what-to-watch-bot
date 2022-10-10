@@ -6,4 +6,4 @@ services:
       - ${HOME}/what-to-whatch-bot:/what-to-whatch-bot
     ports:
       - 3000:3000
-    command: chmod +x /what-to-whatch-bot && what-to-watch-bot
+    command: bash -c "chmod +x /what-to-whatch-bot && /what-to-watch-bot"
