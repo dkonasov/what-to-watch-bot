@@ -3,7 +3,7 @@ services:
   app:
     image: ubuntu
     volumes:
-      - ${HOME}/what-to-watch-bot:/what-to-watch-bot
+      - ${APP_PATH}:/app
     ports:
       - 3000:3000
-    command: bash -c "chmod +x /what-to-watch-bot && /what-to-watch-bot"
+    command: bash -c "chmod +x /app/what-to-watch-bot && /app/what-to-watch-bot"
