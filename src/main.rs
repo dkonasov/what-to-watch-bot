@@ -1,16 +1,15 @@
 use hyper::{Server};
 use std::{convert::Infallible};
-use std::net::SocketAddr;
 use hyper::service::{make_service_fn, service_fn};
 
 pub mod bot;
+pub mod tls;
 
 use crate::bot::Bot;
+use crate::tls::get_tls_listener;
 
 #[tokio::main]
 async fn main() {
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
-
     let bot: &'static Bot = Box::leak(Box::new(Bot::new()));
     bot.start().await;
 
@@ -18,7 +17,8 @@ async fn main() {
         Ok::<_, Infallible>(service_fn(move |req| bot.handle_request(req)))
     });
 
-    let server = Server::bind(&addr).serve(make_svc);
+    let tls_listener = get_tls_listener();
+    let server = Server::builder(tls_listener).serve(make_svc);
 
     if let Err(e) = server.await {
         eprintln!("server error: {}", e);
