@@ -4,6 +4,10 @@ use std::net::SocketAddr;
 use hyper::service::{make_service_fn, service_fn};
 
 pub mod bot;
+pub mod message;
+pub mod models;
+pub mod schema;
+pub mod step;
 
 use crate::bot::Bot;
 

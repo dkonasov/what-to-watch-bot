@@ -8,9 +8,43 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/build.yml
+  deploy_static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: steps/*
+          target: ${{ secrets.APP_PATH }}
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: migrations/*
+          target: ${{ secrets.APP_PATH }}
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: DATABASE_URL=${{ secrets.DATABASE_URL }} diesel migration run
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs:
+      - build
+      - migrate
+      - deploy_static
     steps:
       - uses: actions/download-artifact@v3
         with:

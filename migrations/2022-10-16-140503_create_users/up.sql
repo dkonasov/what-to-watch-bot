@@ -1,0 +1,5 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  telegram_id INTEGER NOT NULL,
+  step_id SMALLINT NOT NULL
+)

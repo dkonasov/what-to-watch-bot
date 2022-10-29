@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 use std::env;
-use hyper::{Body, Request, Response, Client, Uri};
+use hyper::{Body, Request, Response, Client};
 use hyper::client::HttpConnector;
 use hyper::body::to_bytes;
 use hyper_tls::HttpsConnector;
 use std::{convert::Infallible};
 use random_string::generate;
+use crate::message::{IncomingMessage, OutgoingMessage};
+use urlencoding::encode;
 
 pub struct Bot {
     token: String,
@@ -20,7 +22,7 @@ impl Bot {
         let url = match params {
             Some(map) => map.into_iter().fold(format!("{}{}", base, "?"), |acc, (key, value)| {
                 let ampersand = if &acc[acc.len() - 1..] == "?" {""} else {"&"};
-                format!("{}{}{}={}", acc, ampersand, key, value)
+                format!("{}{}{}={}", acc, ampersand, key, encode(value))
             }),
             None => base,
         };
@@ -41,6 +43,7 @@ impl Bot {
         let token = env::var("TOKEN").unwrap();
         let charset = "1234567890abcdef";
         let random_string = generate(6, charset);
+        println!("{}", random_string);
         let https = HttpsConnector::new();
         let client = Client::builder().build::<_, hyper::Body>(https);
         Bot {token, random_string, client}
@@ -54,13 +57,12 @@ impl Bot {
             Ok::<Response<Body>, Infallible>(Response::builder().status(404).body(Body::from("Not found")).unwrap())
         } else {
             let bytes = to_bytes(req.into_body()).await.unwrap();
-            let body_text = String::from_utf8(bytes.to_vec()).unwrap();
-            let body_json = json::parse(&body_text).unwrap();
-            let from_id = body_json["message"]["from"]["id"].as_u32().unwrap();
-            let from_id = format!("{}", from_id);
+            let incoming_message: IncomingMessage = serde_json::from_slice(&bytes).unwrap();
+            let outgoing_message = OutgoingMessage::from_incoming(&incoming_message);
+            let from_id = format!("{}", incoming_message.message.from.id);
             let mut params: HashMap<&str, &str> = HashMap::new();
             params.insert("chat_id", &from_id);
-            params.insert("text", "pong");
+            params.insert("text", &outgoing_message.text);
 
             self.execute_method("sendMessage", Some(params)).await;
             
